@@ -1,0 +1,10 @@
+create table QUESTION_BANK (
+  question_id varchar(50) primary key ,
+  serial_no int,
+  question varchar(4000),
+  disabled char,
+  created_on datetime,
+  created_by varchar(100),
+  updated_on datetime,
+  updated_by varchar(100)
+);
