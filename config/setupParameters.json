@@ -1,0 +1,13 @@
+{
+  "max_questions"                 : 50,
+  "questions_per_user"            : 7,
+  "no_of_questions_for_challenge" : 2,
+  "db_params"                 : {
+      "db_type"     : "sqlserver",
+      "db_user"     : "risk_go_db",
+      "db_pwd"      : "c_xps123",
+      "db_host"     : "192.168.5.76",
+      "db_port"     : 1433,
+      "db_schema"   : "sqlserver"
+  }
+}
