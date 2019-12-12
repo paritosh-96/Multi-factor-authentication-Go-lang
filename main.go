@@ -11,7 +11,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 func listAllBankQuestions(w http.ResponseWriter, r *http.Request) {
@@ -31,12 +30,17 @@ func addNewBankQuestion(w http.ResponseWriter, r *http.Request) {
 	}
 	body, err := ioutil.ReadAll(r.Body)
 
+	type newQuestion struct {
+		Question string
+		UserId   string
+	}
+	var newQues newQuestion
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	bodyParts := strings.Split(string(body), ":")
-	RestAddQuestion(bodyParts[0], bodyParts[1])
+	_ = json.Unmarshal(body, &newQues)
+	RestAddQuestion(newQues.Question, newQues.UserId)
 }
 
 func deleteBankQuestion(w http.ResponseWriter, r *http.Request) {
@@ -60,15 +64,17 @@ func updateSerialNo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	body, err := ioutil.ReadAll(r.Body)
-
+	type question struct {
+		Id       int
+		SerialNo int
+	}
+	var ques question
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	bodyParts := strings.Split(string(body), ":")
-	id, _ := strconv.Atoi(bodyParts[0])
-	serialNo, _ := strconv.Atoi(bodyParts[1])
-	RestUpdateSerialNo(id, serialNo)
+	_ = json.Unmarshal(body, &ques)
+	RestUpdateSerialNo(ques.Id, ques.SerialNo)
 }
 
 func listAllCustomerQuestion(w http.ResponseWriter, r *http.Request) {
@@ -92,9 +98,78 @@ func addCustomerAnswer(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	var answer []Answer
-	_ = json.Unmarshal([]byte(body), &answer)
-	RestAdd(answer)
+	var answers []Answer
+	_ = json.Unmarshal([]byte(body), &answers)
+	RestAdd(answers)
+}
+
+func listAnsweredQuestion(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+
+	var custId Answer
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	_ = json.Unmarshal(body, &custId)
+	var questions, er = RestListAnsweredQuestions(custId.CustomerId)
+	if er != nil {
+		fmt.Fprintf(w, "No Answers found")
+	} else {
+		log.Println("Answers found: ", len(questions))
+		json.NewEncoder(w).Encode(questions)
+	}
+}
+
+func resetAnswers(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	var answer Answer
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	_ = json.Unmarshal(body, &answer)
+	RestReset(answer)
+}
+
+func modifyAnswer(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	var answer Answer
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	_ = json.Unmarshal(body, &answer)
+	RestModify(answer)
+}
+
+func deleteAnswer(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	var answer Answer
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	_ = json.Unmarshal(body, &answer)
+	RestDelete(answer)
 }
 
 func bankHomePage(w http.ResponseWriter, r *http.Request) {
@@ -114,7 +189,11 @@ func handleRequests() {
 	router.HandleFunc("/bank/updateSerialNo", updateSerialNo)
 	router.HandleFunc("/customer", customerHomePage)
 	router.HandleFunc("/customer/listAll", listAllCustomerQuestion)
-	router.HandleFunc("/customer/addCustomerAnswer", addCustomerAnswer)
+	router.HandleFunc("/customer/add", addCustomerAnswer)
+	router.HandleFunc("/customer/list", listAnsweredQuestion)
+	router.HandleFunc("/customer/reset", resetAnswers)
+	router.HandleFunc("/customer/modify", modifyAnswer)
+	router.HandleFunc("/customer/delete", deleteAnswer)
 	log.Fatal(http.ListenAndServe(":9080", router))
 }
 

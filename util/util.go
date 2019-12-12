@@ -21,3 +21,10 @@ func Close() {
 	}
 	log.Println("Database handle closed successfully")
 }
+
+func Empty(str string) bool {
+	if str == "" {
+		return true
+	}
+	return false
+}

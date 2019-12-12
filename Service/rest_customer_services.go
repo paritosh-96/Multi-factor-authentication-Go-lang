@@ -9,10 +9,10 @@ import (
 )
 
 type Answer struct {
-	questionId string
-	answer     string
-	customerId string
-	createdBy  string
+	QuestionId string
+	Answer     string
+	CustomerId string
+	UserId     string
 }
 
 func RestListAll() (questions []Question, err error) {
@@ -38,15 +38,15 @@ func RestListAll() (questions []Question, err error) {
 func RestAdd(answers []Answer) {
 	for _, answer := range answers {
 		_, err := startup.Db.Query("[SP_CUSTOMER_QUESTIONS_ADD]",
-			sql.Named("questionId", answer.questionId),
-			sql.Named("customerId", answer.customerId),
-			sql.Named("answer", answer.answer),
-			sql.Named("userId", answer.createdBy))
+			sql.Named("questionId", answer.QuestionId),
+			sql.Named("customerId", answer.CustomerId),
+			sql.Named("answer", answer.Answer),
+			sql.Named("userId", answer.UserId))
 		if err != nil {
-			log.Println("Error while adding answer for [", answer.questionId, " ]: ", err)
+			log.Println("Error while adding answer for [", answer.QuestionId, " ]: ", err)
 			continue
 		}
-		log.Println("Answer for question [", answer.questionId, "] successfully added")
+		log.Println("Answer for question [", answer.QuestionId, "] successfully added")
 	}
 }
 
@@ -59,7 +59,7 @@ func RestListAnsweredQuestions(customerId string) (answers []Answer, err error) 
 	answers = []Answer{}
 	for rows.Next() {
 		var ans Answer
-		err := rows.Scan(&ans.questionId, &ans.customerId, &ans.answer)
+		err := rows.Scan(&ans.QuestionId, &ans.CustomerId, &ans.Answer)
 		util.Check(err, "")
 		answers = append(answers, ans)
 	}
@@ -72,26 +72,26 @@ func RestListAnsweredQuestions(customerId string) (answers []Answer, err error) 
 	return answers, nil
 }
 
-func RestReset(customerId string, userId string) {
+func RestReset(answer Answer) {
 	_, err := startup.Db.Query("[SP_CUSTOMER_QUESTIONS_RESET]",
-		sql.Named("customerId", customerId),
-		sql.Named("userId", userId))
+		sql.Named("customerId", answer.CustomerId),
+		sql.Named("userId", answer.UserId))
 	if err != nil {
-		log.Fatal("Could not reset answers for customer [", customerId, "] Error: ", err)
+		log.Fatal("Could not reset answers for customer [", answer.CustomerId, "] Error: ", err)
 		return
 	}
-	log.Println("All answers reset for customer  [", customerId, "] successful")
+	log.Println("All answers reset for customer  [", answer.CustomerId, "] successful")
 
 }
 
 func RestModify(answer Answer) {
 	_, err := startup.Db.Query("[SP_CUSTOMER_QUESTIONS_UPDATE]",
-		sql.Named("customerId", answer.customerId),
-		sql.Named("questionId", answer.questionId),
-		sql.Named("answer", answer.answer),
-		sql.Named("userId", answer.createdBy))
+		sql.Named("customerId", answer.CustomerId),
+		sql.Named("questionId", answer.QuestionId),
+		sql.Named("answer", answer.Answer),
+		sql.Named("userId", answer.UserId))
 	if err != nil {
-		log.Fatal("Could not update the answer for quetion [", answer.questionId, "] Error: ", err)
+		log.Fatal("Could not update the answer for quetion [", answer.QuestionId, "] Error: ", err)
 		return
 	}
 	log.Println("Answer modified successfully")
@@ -99,12 +99,12 @@ func RestModify(answer Answer) {
 
 func RestDelete(answer Answer) {
 	_, err := startup.Db.Query("[SP_CUSTOMER_QUESTION_DELETE]",
-		sql.Named("customerId", answer.customerId),
-		sql.Named("questionId", answer.questionId),
-		sql.Named("userId", answer.createdBy))
+		sql.Named("customerId", answer.CustomerId),
+		sql.Named("questionId", answer.QuestionId),
+		sql.Named("userId", answer.UserId))
 	if err != nil {
-		log.Fatal("Could not delete answer for the custoemr [", answer.customerId, "] Error: ", err)
+		log.Fatal("Could not delete answer for the custoemr [", answer.CustomerId, "] Error: ", err)
 		return
 	}
-	log.Println("Answer deleted from the customer [" + answer.customerId + "]")
+	log.Println("Answer deleted from the customer [" + answer.CustomerId + "]")
 }

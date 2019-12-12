@@ -1,1 +1,0 @@
-document.getElementById("text").innerHTML = "Bank Questionnaire<br /><p>Demo Page</p>";

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/paritosh-96/RestServer/startup"
+	"github.com/paritosh-96/RestServer/util"
 	"log"
 )
 
@@ -34,6 +35,10 @@ func RestListOfQuestions() (questions []Question, err error) {
 }
 
 func RestAddQuestion(question string, userId string) {
+	if util.Empty(question) || util.Empty(userId) {
+		log.Fatal("User Id or the question can not be left blank")
+		return
+	}
 	_, err := startup.Db.Query("[SP_QUESTION_BANK_ADD]", sql.Named("text", question), sql.Named("userId", userId))
 	if err != nil {
 		log.Fatal(err)
