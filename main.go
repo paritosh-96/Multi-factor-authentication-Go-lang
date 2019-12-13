@@ -40,7 +40,9 @@ func addNewBankQuestion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_ = json.Unmarshal(body, &newQues)
-	RestAddQuestion(newQues.Question, newQues.UserId)
+	if err = RestAddQuestion(newQues.Question, newQues.UserId); err != nil {
+		http.Error(w, err.Error(), 400)
+	}
 }
 
 func deleteBankQuestion(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +102,7 @@ func addCustomerAnswer(w http.ResponseWriter, r *http.Request) {
 	}
 	var answers []Answer
 	_ = json.Unmarshal([]byte(body), &answers)
-	RestAdd(answers)
+	json.NewEncoder(w).Encode(RestAdd(answers))
 }
 
 func listAnsweredQuestion(w http.ResponseWriter, r *http.Request) {
@@ -172,6 +174,44 @@ func deleteAnswer(w http.ResponseWriter, r *http.Request) {
 	RestDelete(answer)
 }
 
+func challengeUser(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	var answer Answer
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	_ = json.Unmarshal(body, &answer)
+	questions, restError := RestChallenge(answer.CustomerId)
+	if restError != nil {
+		http.Error(w, restError.Error(), 400)
+		return
+	}
+	json.NewEncoder(w).Encode(questions)
+}
+
+func validateAnswers(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	var answer []Answer
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	_ = json.Unmarshal(body, &answer)
+	successStatus := RestValidateAnswers(answer)
+	json.NewEncoder(w).Encode(successStatus)
+}
+
 func bankHomePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to the Bank Questionnaire!")
 }
@@ -194,6 +234,8 @@ func handleRequests() {
 	router.HandleFunc("/customer/reset", resetAnswers)
 	router.HandleFunc("/customer/modify", modifyAnswer)
 	router.HandleFunc("/customer/delete", deleteAnswer)
+	router.HandleFunc("/event/challenge", challengeUser)
+	router.HandleFunc("/event/validate", validateAnswers)
 	log.Fatal(http.ListenAndServe(":9080", router))
 }
 

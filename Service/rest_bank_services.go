@@ -15,7 +15,7 @@ type Question struct {
 }
 
 func RestListOfQuestions() (questions []Question, err error) {
-	rows, err := startup.Db.Query("[SP_QUESTION_BANK_GET]")
+	rows, err := startup.Db.Query("[SP_QUESTION_BANK_GET_ALL]")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,17 +34,24 @@ func RestListOfQuestions() (questions []Question, err error) {
 	return questions, nil
 }
 
-func RestAddQuestion(question string, userId string) {
+func RestAddQuestion(question string, userId string) error {
 	if util.Empty(question) || util.Empty(userId) {
 		log.Fatal("User Id or the question can not be left blank")
-		return
+		return errors.New("User Id or the question can not be left blank ")
+	}
+
+	questions, _ := RestListOfQuestions()
+	if len(questions) >= startup.ConfigParameters.MaxQuestions {
+		log.Fatal("Maximum questions limit already reached, Can not add a new question")
+		return errors.New("Maximum questions limit already reached, Can not add a new question ")
 	}
 	_, err := startup.Db.Query("[SP_QUESTION_BANK_ADD]", sql.Named("text", question), sql.Named("userId", userId))
 	if err != nil {
 		log.Fatal(err)
-		return
+		return err
 	}
 	log.Println("Added a new Question successfully by [", userId, "]")
+	return nil
 }
 
 func RestDeleteQuestion(id int) {

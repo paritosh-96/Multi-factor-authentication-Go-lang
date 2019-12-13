@@ -6,10 +6,11 @@ import (
 	"github.com/paritosh-96/RestServer/startup"
 	"github.com/paritosh-96/RestServer/util"
 	"log"
+	"strconv"
 )
 
 type Answer struct {
-	QuestionId string
+	QuestionId int
 	Answer     string
 	CustomerId string
 	UserId     string
@@ -35,7 +36,8 @@ func RestListAll() (questions []Question, err error) {
 	return questions, nil
 }
 
-func RestAdd(answers []Answer) {
+func RestAdd(answers []Answer) map[string]string {
+	var acceptStatus map[string]string = map[string]string{}
 	for _, answer := range answers {
 		_, err := startup.Db.Query("[SP_CUSTOMER_QUESTIONS_ADD]",
 			sql.Named("questionId", answer.QuestionId),
@@ -44,10 +46,13 @@ func RestAdd(answers []Answer) {
 			sql.Named("userId", answer.UserId))
 		if err != nil {
 			log.Println("Error while adding answer for [", answer.QuestionId, " ]: ", err)
+			acceptStatus[strconv.Itoa(answer.QuestionId)] = "Rejected, Error: " + err.Error()
 			continue
 		}
+		acceptStatus[strconv.Itoa(answer.QuestionId)] = "Accepted"
 		log.Println("Answer for question [", answer.QuestionId, "] successfully added")
 	}
+	return acceptStatus
 }
 
 func RestListAnsweredQuestions(customerId string) (answers []Answer, err error) {
@@ -91,7 +96,7 @@ func RestModify(answer Answer) {
 		sql.Named("answer", answer.Answer),
 		sql.Named("userId", answer.UserId))
 	if err != nil {
-		log.Fatal("Could not update the answer for quetion [", answer.QuestionId, "] Error: ", err)
+		log.Fatal("Could not update the answer for question [", answer.QuestionId, "] Error: ", err)
 		return
 	}
 	log.Println("Answer modified successfully")
@@ -103,7 +108,7 @@ func RestDelete(answer Answer) {
 		sql.Named("questionId", answer.QuestionId),
 		sql.Named("userId", answer.UserId))
 	if err != nil {
-		log.Fatal("Could not delete answer for the custoemr [", answer.CustomerId, "] Error: ", err)
+		log.Fatal("Could not delete answer for the customer [", answer.CustomerId, "] Error: ", err)
 		return
 	}
 	log.Println("Answer deleted from the customer [" + answer.CustomerId + "]")
