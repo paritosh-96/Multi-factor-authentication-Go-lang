@@ -1,0 +1,108 @@
+
+.App-logo {
+  height: 10vmin;
+  width: 25vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 10vh;
+  flex-direction: column;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-body {
+  text-align: center;
+}
+
+.App-link {
+  background-color: darkgreen;
+  font-size: 20px;
+  width: 20%;
+}
+
+.Customer-link {
+  margin-left: 2%;
+}
+
+.Validation-link {
+  margin-left: 2%;
+}
+
+.Link-text {
+  color: white;
+}
+
+.tab-view {
+  backgroundColor: "#1976d2";
+  margin-top: 2%
+}
+
+.App-tabs {
+  display: block;
+}
+
+.userId-text {
+  margin-left: 1%;
+  text-align: center;
+}
+
+.Bank-question-list {
+  width: 80%;
+  text-align: center;
+  margin-left: 12%
+}
+
+.add-btn {
+  margin-top: 2%;
+}
+
+.CustomerQuestionView {
+  width: 80%;
+  margin-left: 10%
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -5px;
+  margin-left: -5px;
+  margin-top: 1%;
+}
+
+.btn-add {
+  /*margin-left: %;*/
+}
+
+.btn-modify {
+  margin-left: -1.4%;
+}
+
+.btn-reset {
+  margin-left: 0.7%;
+  width: 9%;
+}
+
+.btn-div {
+  margin-top: 1%;
+}
+
+.question-view-div {
+  overflow:scroll;
+  height:450px;
+}
+
+.question-view-table {
+  width: 100%;
+}
+
+th, td {
+  padding: 15px;
+}
+
+.table-edit-img {
+  width: 6%;
+  margin-right: 2%;
+}

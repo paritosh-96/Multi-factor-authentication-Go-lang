@@ -9,7 +9,7 @@ import (
 )
 
 type Question struct {
-	QuestionId string
+	QuestionId int
 	SerialNo   int
 	Question   string
 }
@@ -54,13 +54,17 @@ func RestAddQuestion(question string, userId string) error {
 	return nil
 }
 
-func RestDeleteQuestion(id int) {
-	_, err := startup.Db.Query("[SP_QUESTION_BANK_DELETE]", sql.Named("id", id))
+func RestDeleteQuestion(id int, userId string) error {
+	if !isIdValid(id) {
+		return errors.New("Question id does not exists! ")
+	}
+	_, err := startup.Db.Query("[SP_QUESTION_BANK_DELETE]", sql.Named("id", id), sql.Named("userId", userId))
 	if err != nil {
-		log.Fatal(err)
-		return
+		log.Println(err)
+		return err
 	}
 	log.Println("Deleted Question [", id, "] successfully")
+	return nil
 }
 
 func RestUpdateSerialNo(id int, serialNo int) {
@@ -70,4 +74,15 @@ func RestUpdateSerialNo(id int, serialNo int) {
 		return
 	}
 	log.Println("Updated serial number")
+}
+
+func isIdValid(id int) bool {
+	found := false
+	questions, _ := RestListOfQuestions()
+	for _, v := range questions {
+		if v.QuestionId == id {
+			found = true
+		}
+	}
+	return found
 }

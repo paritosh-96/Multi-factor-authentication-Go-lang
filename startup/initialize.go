@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/url"
+	"os"
+	"path/filepath"
 )
 
 /**
@@ -16,7 +18,7 @@ Structure to store all the configuration parameters
 type Parameters struct {
 	MaxQuestions               int            `json:"max_questions"`
 	QuestionsPerUser           int            `json:"questions_per_user"`
-	NoOfQuestionsForChallenger int            `json:"no_of_questions_for_challenger"`
+	NoOfQuestionsForChallenger int            `json:"no_of_questions_for_challenge"`
 	DbParams                   DatabaseParams `json:"db_params"`
 }
 
@@ -35,6 +37,7 @@ type DatabaseParams struct {
 var (
 	Db               *sql.DB
 	ConfigParameters Parameters
+	CurrentPath      string
 )
 
 /**
@@ -42,6 +45,7 @@ Load all the configuration parameters
 Setup the database handler using the config parameters
 */
 func init() {
+	setCurrentPath()
 	loadParams()
 	log.Println("Setting up con")
 	u := &url.URL{
@@ -58,6 +62,15 @@ func init() {
 		log.Println("Successfully created Database con")
 		log.Println("Db handler valid: ", IsConOk())
 	}
+}
+
+func setCurrentPath() {
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	CurrentPath = filepath.Dir(ex)
+	log.Println("Current directory path set as [" + CurrentPath + "]")
 }
 
 /**

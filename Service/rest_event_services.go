@@ -22,14 +22,18 @@ func RestChallenge(customerId string) ([]Question, error) {
 		ids = append(ids, quesId)
 	}
 	if ids == nil {
-		log.Fatal("No question answered for the customer [" + customerId + "]")
+		log.Println("No question answered for the customer [" + customerId + "]")
 		return nil, errors.New("No question answered for the customer [" + customerId + "]")
 	}
 	rand.Seed(time.Now().UnixNano())
 	var questions []Question
-	for i := 0; i < startup.ConfigParameters.NoOfQuestionsForChallenger; i++ {
+	var visitedQuestionIds []int
+	for len(visitedQuestionIds) < startup.ConfigParameters.NoOfQuestionsForChallenger {
 		ind := rand.Intn(len(ids))
-		rows, err := startup.Db.Query("[SP_QUESTION_BANK_GET]", sql.Named("questionId", ids[ind+1]))
+		if util.Contains(visitedQuestionIds, ind) {
+			continue
+		}
+		rows, err := startup.Db.Query("[SP_QUESTION_BANK_GET]", sql.Named("questionId", ids[ind]))
 		util.Check(err, "Error while loading question for challenge")
 		for rows.Next() {
 			var question Question
@@ -37,32 +41,29 @@ func RestChallenge(customerId string) ([]Question, error) {
 			util.Check(err, "Error while loading the question from the resultSet")
 			questions = append(questions, question)
 		}
+		visitedQuestionIds = append(visitedQuestionIds, ind)
 	}
 	return questions, nil
 }
 
-func RestValidateAnswers(answers []Answer) map[int]string {
+func RestValidateAnswers(answers []Answer) error {
 	if len(answers) == 0 {
 		log.Fatal("No answers found to validate ")
 		return nil
 	}
-	status := map[int]string{}
 	for _, answer := range answers {
 		rows, err := startup.Db.Query("[SP_CUSTOMER_QUESTIONS_VALIDATE]",
 			sql.Named("customerId", answer.CustomerId),
-			sql.Named("questionId", answer.QuestionId),
-			sql.Named("answer", answer.Answer))
+			sql.Named("questionId", answer.QuestionId))
 		util.Check(err, "Error while validating answers")
 		for rows.Next() {
-			var success int
-			err := rows.Scan(&success)
+			var correctAnswer string
+			err := rows.Scan(&correctAnswer)
 			util.Check(err, "Error while loading the success status of validation of answers")
-			if success == 0 {
-				status[answer.QuestionId] = "Correct"
-			} else {
-				status[answer.QuestionId] = "Wrong"
+			if answer.Answer != correctAnswer {
+				return errors.New("Invalid answer: ")
 			}
 		}
 	}
-	return status
+	return nil
 }

@@ -7,7 +7,7 @@ import (
 
 func Check(err error, msg string) {
 	if err != nil {
-		log.Fatal(msg, err)
+		log.Println(msg, err)
 	}
 }
 
@@ -25,6 +25,15 @@ func Close() {
 func Empty(str string) bool {
 	if str == "" {
 		return true
+	}
+	return false
+}
+
+func Contains(arr []int, num int) bool {
+	for _, a := range arr {
+		if a == num {
+			return true
+		}
 	}
 	return false
 }

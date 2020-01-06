@@ -10,7 +10,7 @@ BEGIN
 	SET QUOTED_IDENTIFIER ON;
 	SET NOCOUNT ON;
 
-	SELECT [questionId], [answer]
+	SELECT [questionId], [customerId], [answer]
 	FROM [dbo].[CUSTOMER_QUESTIONS] WITH (NOLOCK)
 	WHERE [isDeleted] = 0 AND [customerId] = @customerId
 	ORDER BY [createdOn] ASC;
