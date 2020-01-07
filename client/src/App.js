@@ -27,13 +27,18 @@ function App() {
         <div className="App">
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo"/>
-            </header>
-            <div className="App-body">
-                <div>
-                    <p>Welcome to the Question Manager</p>
-                    <label>Enter the user Id: </label>
+                    <p className="welcome-top">Welcome to the Question Manager</p>
+                <div className="user-input">
+                    <label className="input-label">Enter the user Id: </label>
                     <input className="userId-text" type="text" value={userId} onChange={handleUserIdChange}/>
                 </div>
+            </header>
+            <div className="App-body">
+                {/*<div>*/}
+                {/*    <p>Welcome to the Question Manager</p>*/}
+                {/*    <label>Enter the user Id: </label>*/}
+                {/*    <input className="userId-text" type="text" value={userId} onChange={handleUserIdChange}/>*/}
+                {/*</div>*/}
                 <AppBar position="static" className="tab-view">
                     <Tabs value={view} onChange={handleViewChange} centered="true">
                         <Tab label="Bank App" title="Open bank app" value="Bank"/>

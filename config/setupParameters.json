@@ -1,5 +1,5 @@
 {
-  "max_questions"                 : 50,
+  "max_questions"                 : 10,
   "questions_per_user"            : 7,
   "no_of_questions_for_challenge" : 2,
   "db_params"                 : {

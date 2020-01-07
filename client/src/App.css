@@ -1,16 +1,23 @@
 
 .App-logo {
-  height: 10vmin;
-  width: 25vmin;
+  height: 6vmin;
+  width: 18vmin;
+  margin: 8px;
+
+}
+body{
+  overflow-x: hidden;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 10vh;
+  background-color: #007bff;
+  min-height: 6vh;
   flex-direction: column;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #fff;
+  margin-bottom: -3vh;
+  height: 10vh;
 }
 
 .App-body {
@@ -47,6 +54,10 @@
 .userId-text {
   margin-left: 1%;
   text-align: center;
+  font-size: smaller;
+  border-radius: 10px;
+  padding: 0px;
+  width: 19%;
 }
 
 .Bank-question-list {
@@ -56,7 +67,10 @@
 }
 
 .add-btn {
-  margin-top: 2%;
+  float: right;
+  margin: 11vh;
+  background-color: seagreen;
+  font-weight: bold;
 }
 
 .CustomerQuestionView {
@@ -90,7 +104,7 @@
 }
 
 .question-view-div {
-  overflow:scroll;
+  overflow-y:scroll;
   height:450px;
 }
 
@@ -105,4 +119,45 @@ th, td {
 .table-edit-img {
   width: 6%;
   margin-right: 2%;
+}
+
+.welcome-message
+{
+  padding: 10px;
+
+
+}
+.user-name
+{
+  color: green;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+
+.welcome-top
+{
+  margin-top: 0;
+  margin-bottom: 1rem;
+  position: relative;
+  left: 36%;
+  font-size: 32px;
+  font-weight: 700;
+  top: -6vh;
+}
+
+.user-input
+{
+  position: relative;
+  top: -13vh;
+  left: 68%;
+}
+
+.input-label
+{
+  display: inline-block;
+  margin-bottom: .5rem;
+  font-size: 24px;
+  font-style: unset;
+  font-weight: normal;
 }

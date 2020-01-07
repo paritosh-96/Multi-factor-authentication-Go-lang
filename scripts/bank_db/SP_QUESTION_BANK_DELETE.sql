@@ -12,7 +12,7 @@ BEGIN
     SET NOCOUNT ON;
 
     UPDATE [dbo].[QUESTION_BANK]
-    SET [isDeleted] = 1, [updatedBy] = @userId
+    SET [isDeleted] = 1, [updatedBy] = @userId, [updatedOn] = CURRENT_TIMESTAMP
     WHERE [id] = @id;
 
     IF OBJECT_ID('tempdb..#SortedQuestions') IS NOT NULL DROP TABLE [#SortedQuestions];

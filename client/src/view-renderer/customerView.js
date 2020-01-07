@@ -89,7 +89,7 @@ const CustomerView = (props) => {
     const handleFormSubmit = (event) => {
         event.preventDefault();
         if (typeOfSubmit === "reset") {
-            axios.get(baseUrl + 'api/customer/reset?customerId=' + props.userId).then(response => {
+            axios.post(baseUrl + 'api/customer/reset?customerId=' + props.userId).then(response => {
                 swal("Success", "All answers has been reset", "success");
                 bootstrap();
             }, error => {
@@ -136,7 +136,7 @@ const CustomerView = (props) => {
 
     return (
         <div>
-            <p>Welcome {props.userId}, Add security questions for the customer</p>
+            <p>Welcome <span className="user-name"> {props.userId}</span>, Add security questions for the customer</p>
             <div className="CustomerQuestionView">
                 {noOfQuestionsPerCust !== 0 &&
                 <Form id="questionForm" onSubmit={handleFormSubmit}>

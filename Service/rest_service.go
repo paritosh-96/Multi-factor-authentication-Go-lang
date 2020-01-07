@@ -40,6 +40,7 @@ func AddNewBankQuestion(c *gin.Context) {
 	}
 	_ = json.Unmarshal(body, &newQues)
 	if err = RestAddQuestion(newQues.Question, newQues.UserId); err != nil {
+		log.Println(err.Error())
 		http.Error(c.Writer, err.Error(), 400)
 	}
 }

@@ -33,7 +33,7 @@ const BankView = (props) => {
             swal("Added successfully", "Question added successfully", "success");
             bootstrap();
         }).catch(error => {
-            swal("Oops", "Error while adding question: " + error, "error");
+            swal("Oops", "Error while adding question: " + (error.response.data ? error.response.data : error), "error");
         });
         setNewQuestion("");
     };
@@ -69,11 +69,12 @@ const BankView = (props) => {
 
     return (
         <div>
-            <p>Welcome {props.userId}, Work on the security questions of the Bank</p>
+            <p className="welcome-message">Welcome <span className="user-name">{props.userId}</span>, Work on the security questions of the Bank</p>
             <h3>Questions:</h3>
             <div className="Bank-question-list">
                 <div className="question-view-div">
-                    {questions && <TableRenderer data={questions} handleDelete={handleQuestionDelete} handleSerialNoEdit={updateSerialNo} handleSave={saveClickHandler}
+                    {questions && <TableRenderer data={questions} handleDelete={handleQuestionDelete}
+                                                 handleSerialNoEdit={updateSerialNo} handleSave={saveClickHandler}
                                                  headers={templateJson.attrFields}/>}
                 </div>
                 <button type="button" className="btn btn-info btn-lg add-btn" onClick={handleShow}>

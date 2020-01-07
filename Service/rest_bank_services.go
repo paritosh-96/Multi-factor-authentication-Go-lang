@@ -36,13 +36,13 @@ func RestListOfQuestions() (questions []Question, err error) {
 
 func RestAddQuestion(question string, userId string) error {
 	if util.Empty(question) || util.Empty(userId) {
-		log.Fatal("User Id or the question can not be left blank")
+		log.Println("User Id or the question can not be left blank")
 		return errors.New("User Id or the question can not be left blank ")
 	}
 
 	questions, _ := RestListOfQuestions()
 	if len(questions) >= startup.ConfigParameters.MaxQuestions {
-		log.Fatal("Maximum questions limit already reached, Can not add a new question")
+		log.Println("Maximum questions limit already reached, Can not add a new question")
 		return errors.New("Maximum questions limit already reached, Can not add a new question ")
 	}
 	_, err := startup.Db.Query("[SP_QUESTION_BANK_ADD]", sql.Named("text", question), sql.Named("userId", userId))

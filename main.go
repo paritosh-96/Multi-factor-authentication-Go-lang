@@ -8,10 +8,18 @@ import (
 	"github.com/paritosh-96/RestServer/util"
 )
 
+func corsMiddleWare() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Next()
+	}
+}
+
 func start() {
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
 
+	router.Use(corsMiddleWare())
 	// Serve frontend static files
 	router.Use(static.Serve("/", static.LocalFile("github.com/paritosh-96/RestServer/client/build", true)))
 
@@ -31,7 +39,6 @@ func start() {
 		api.POST("/customer/modify", ModifyAnswer)
 		api.POST("/customer/delete", DeleteAnswer)
 
-		api.GET("/event/challengeQuestionsCount", GetChallengeQuesCount)
 		api.GET("/event/challenge", ChallengeUser)
 		api.POST("/event/validate", ValidateAnswers)
 	}
