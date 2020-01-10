@@ -1,7 +1,7 @@
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 CREATE OR ALTER PROCEDURE [dbo].[SP_CUSTOMER_QUESTIONS_RESET] (
-	@customerId VARCHAR (64)
+	@customerId VARCHAR (64), @userId VARCHAR(64)
 ) AS
 BEGIN
 	SET ANSI_NULLS ON;
@@ -10,7 +10,7 @@ BEGIN
 	SET NOCOUNT ON;
 
 	UPDATE [dbo].[CUSTOMER_QUESTIONS]
-		SET [isDeleted] = 1 , [updatedBy] = @customerId, [updatedOn] = GETDATE()
+		SET [isDeleted] = 1 , [updatedBy] = @userId, [updatedOn] = GETDATE()
 		WHERE [customerId] = @customerId;
 END;
 -- select * from CUSTOMER_QUESTIONS

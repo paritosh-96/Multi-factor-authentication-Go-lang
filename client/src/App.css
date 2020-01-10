@@ -1,163 +1,186 @@
-
 .App-logo {
-  height: 6vmin;
-  width: 18vmin;
-  margin: 8px;
-
+    height: 6vmin;
+    width: 18vmin;
+    margin: 8px;
 }
-body{
-  overflow-x: hidden;
+
+body {
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .App-header {
-  background-color: #007bff;
-  min-height: 6vh;
-  flex-direction: column;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: #fff;
-  margin-bottom: -3vh;
-  height: 10vh;
+    background-color: #007bff;
+    min-height: 6vh;
+    flex-direction: column;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: #fff;
+    margin-bottom: -3vh;
+    height: 10vh;
 }
 
 .App-body {
-  text-align: center;
+    text-align: center;
 }
 
 .App-link {
-  background-color: darkgreen;
-  font-size: 20px;
-  width: 20%;
+    background-color: darkgreen;
+    font-size: 20px;
+    width: 20%;
 }
 
 .Customer-link {
-  margin-left: 2%;
+    margin-left: 2%;
 }
 
 .Validation-link {
-  margin-left: 2%;
+    margin-left: 2%;
 }
 
 .Link-text {
-  color: white;
+    color: white;
 }
 
 .tab-view {
-  backgroundColor: "#1976d2";
-  margin-top: 2%
+    background-color: "#1976d2";
+    margin-top: 3%;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.jss55 {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+Tab label {
+    font-weight: bold;
 }
 
 .App-tabs {
-  display: block;
+    display: block;
 }
 
 .userId-text {
-  margin-left: 1%;
-  text-align: center;
-  font-size: smaller;
-  border-radius: 10px;
-  padding: 0px;
-  width: 19%;
+    margin-left: 1%;
+    text-align: center;
+    font-size: smaller;
+    border-radius: 10px;
+    padding: 0px;
+    width: 19%;
 }
 
 .Bank-question-list {
-  width: 80%;
-  text-align: center;
-  margin-left: 12%
+    width: 80%;
+    text-align: center;
+    margin-left: 12%
 }
 
 .add-btn {
-  float: right;
-  margin: 11vh;
-  background-color: seagreen;
-  font-weight: bold;
+    float: right;
+    margin: 11vh;
+    background-color: seagreen;
+    font-weight: bold;
 }
 
 .CustomerQuestionView {
-  width: 80%;
-  margin-left: 10%
+    width: 80%;
+    margin-left: 10%
 }
 
 .form-row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -5px;
-  margin-left: -5px;
-  margin-top: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -5px;
+    margin-left: -5px;
+    margin-top: 1%;
 }
 
 .btn-add {
-  /*margin-left: %;*/
+    /*margin-left: %;*/
+    font-weight: bold;
 }
 
 .btn-modify {
-  margin-left: -1.4%;
+    margin-left: -1.4%;
+    font-weight: bold;
 }
 
 .btn-reset {
-  margin-left: 0.7%;
-  width: 9%;
+    margin-left: 0.7%;
+    width: 9%;
+    font-weight: bold;
 }
 
 .btn-div {
-  margin-top: 1%;
+    margin-top: 5%;
+    font-size: 20px;
 }
 
 .question-view-div {
-  overflow-y:scroll;
-  height:450px;
+    overflow-y: scroll;
+    height: 450px;
 }
 
 .question-view-table {
-  width: 100%;
+    width: 100%;
 }
 
-th, td {
-  padding: 15px;
+th,
+td {
+    padding: 15px;
 }
 
 .table-edit-img {
-  width: 6%;
-  margin-right: 2%;
+    width: 6%;
+    margin-right: 2%;
 }
 
-.welcome-message
-{
-  padding: 10px;
-
-
-}
-.user-name
-{
-  color: green;
-  font-weight: bold;
-  font-size: 20px;
+.welcome-message {
+    padding: 10px;
+    margin: 1%;
 }
 
-
-.welcome-top
-{
-  margin-top: 0;
-  margin-bottom: 1rem;
-  position: relative;
-  left: 36%;
-  font-size: 32px;
-  font-weight: 700;
-  top: -6vh;
+.user-name {
+    color: green;
+    font-weight: bold;
+    font-size: 20px;
 }
 
-.user-input
-{
-  position: relative;
-  top: -13vh;
-  left: 68%;
+.welcome-top {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    position: relative;
+    left: 45%;
+    font-size: 35px;
+    font-weight: 700;
+    top: -6vh;
 }
 
-.input-label
-{
-  display: inline-block;
-  margin-bottom: .5rem;
-  font-size: 24px;
-  font-style: unset;
-  font-weight: normal;
+.user-input {
+    position: relative;
+    top: -13vh;
+    left: 68%;
+}
+
+.input-label {
+    display: inline-block;
+    margin-bottom: .5rem;
+    font-size: 24px;
+    font-style: unset;
+    font-weight: normal;
+}
+
+.delete-button {
+    font-size: 24px;
+    color: red;
+    font-weight: bold;
+}
+
+.validate-button {
+    float: right;
+    margin-right: 10%;
+    font-size: 18px;
+    font-weight: bold;
 }

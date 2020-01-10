@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import TableRenderer from '../utils/tablerenderer';
+import TableRenderer from '../utils/tableRenderer';
 import axios from 'axios';
 import {baseUrl} from "../utils/util";
 import Modal from "react-bootstrap/Modal"
@@ -11,7 +11,7 @@ import swal from 'sweetalert';
 
 const BankView = (props) => {
 
-    const [questions, setQuestions] = useState();
+    const [questions, setQuestions] = useState([]);
     const [addingQuestion, setAddingQuestion] = useState(null);
     const [newQuestion, setNewQuestion] = useState("");
     const [update, setUpdate] = useState([]);
@@ -23,6 +23,8 @@ const BankView = (props) => {
     const bootstrap = () => {
         axios.get(baseUrl + 'api/bank/listAll').then(response => {
             setQuestions(response.data);
+        }, error => {
+            setQuestions([]);
         })
     };
 
@@ -44,7 +46,7 @@ const BankView = (props) => {
             swal("Deleted Successfully", "", "success");
             bootstrap()
         }).catch(error => {
-            swal("Oops", "Error while deleting question: " + error, "error");
+            swal("Oops", "Error while deleting question: " + (error.response.data ? error.response.data : error), "error");
         })
     };
 
@@ -62,52 +64,48 @@ const BankView = (props) => {
     const handleNewQuestion = (event) => setNewQuestion(event.target.value);
     const handleClose = () => setAddingQuestion(false);
     const handleShow = () => setAddingQuestion(true);
+    const handleFocus = () => document.getElementById("question-popup").focus();
 
     useEffect(() => {
+        console.log("Loading the data");
         bootstrap();
-    }, []);
+    }, [props.viewChanged]);
 
     return (
         <div>
-            <p className="welcome-message">Welcome <span className="user-name">{props.userId}</span>, Work on the security questions of the Bank</p>
-            <h3>Questions:</h3>
+            <p className="welcome-message"> Welcome <span className="user-name"> {props.userId} </span>, Work on the
+                security questions of the Bank</p>
+            <h3> Questions: </h3>
             <div className="Bank-question-list">
                 <div className="question-view-div">
                     {questions && <TableRenderer data={questions} handleDelete={handleQuestionDelete}
                                                  handleSerialNoEdit={updateSerialNo} handleSave={saveClickHandler}
                                                  headers={templateJson.attrFields}/>}
                 </div>
-                <button type="button" className="btn btn-info btn-lg add-btn" onClick={handleShow}>
-                    Add Question
-                </button>
+                <button type="button" className="btn btn-info btn-lg add-btn" onClick={handleShow}>Add Question</button>
                 {addingQuestion === true &&
-                <Modal show={addingQuestion} onHide={handleClose} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Add a new question</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group as={Row} controlId="formPlaintextEmail">
-                                <Form.Label column sm="2">Question:</Form.Label>
-                                <Col sm="10">
-                                    <Form.Control placeHolder="Enter the question" onChange={handleNewQuestion}/>
-                                </Col>
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={handleAddNewQuestion}>
-                            Save Changes
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-                }
+                    <Modal show={addingQuestion} onHide={handleClose} centered onEscapeKeyDown={handleClose} onShow={handleFocus}>
+                        <Modal.Header closeButton>
+                            <Modal.Title> Add a new question </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form>
+                                <Form.Group as={Row} controlId="formPlaintextEmail">
+                                    <Form.Label column sm="2"> Question: </Form.Label>
+                                    <Col sm="10">
+                                        <Form.Control id="question-popup" placeHolder="Enter the question" onChange={handleNewQuestion}/>
+                                    </Col>
+                                </Form.Group>
+                            </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>Close </Button>
+                            <Button variant="primary" onClick={handleAddNewQuestion}>Save Changes </Button>
+                        </Modal.Footer>
+                    </Modal>}
             </div>
         </div>
     );
 };
 
-export default BankView
+export default BankView;

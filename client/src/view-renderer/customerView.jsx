@@ -3,7 +3,6 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import axios from "axios";
 import {baseUrl} from "../utils/util";
-import Button from "react-bootstrap/Button";
 import swal from "sweetalert";
 
 const CustomerView = (props) => {
@@ -59,7 +58,7 @@ const CustomerView = (props) => {
     };
 
     const updateAnswerField = (ind, event) => {
-        console.log("Chnaging answers");
+        console.log("Changing answers");
         let _q = JSON.parse(JSON.stringify(questionAnswer));
         _q[ind]["Answer"] = event.target.value;
         setQuestionAnswer(_q);
@@ -72,16 +71,21 @@ const CustomerView = (props) => {
     };
 
     const isValidData = () => {
-        let notValid = false;
         for (let ques of questionAnswer) {
-            if (ques.QuestionId === -1 || ques.Answer.length < 3) {
-                notValid = true;
-                break;
+            if (ques.QuestionId === -1) {
+                swal("Invalid Data", "All " + noOfQuestionsPerCust + " questions should be selected to answer, Please select all and try again!", "error");
+                return false;
+            }
+            if (ques.Answer.length === 0) {
+                swal("Invalid Data", "All questions must be answered, Please answer all the questions and try again!", "error");
+                return false;
             }
         }
-        if (notValid) {
-            swal("Invalid", "The questions or answers are invalid. All questions must be answered, and the answer should be of minimum 3 characters", "error");
-            return false;
+        for (let ques of questionAnswer) {
+            if (ques.Answer.length < 3) {
+                swal("Invalid Data", "Answers should be minnimum of 3 characters. PLease verify the answers and try again!", "error");
+                return false;
+            }
         }
         return true;
     };
@@ -93,25 +97,29 @@ const CustomerView = (props) => {
                 swal("Success", "All answers has been reset", "success");
                 bootstrap();
             }, error => {
-                swal("Error", "Could not reset the answers: " + error, "error");
+                swal("Error", "Could not reset the answers: " + (error.response.data ? error.response.data : error), "error");
             })
         } else {
             if (isValidData()) {
                 let json = JSON.stringify(questionAnswer);
 
                 if (typeOfSubmit === "add") {
-                    axios.post(baseUrl + 'api/customer/add', json).then(response => {
-                        swal("Added successfully", "All the answers were added successfully", "success");
-                        bootstrap();
+                    axios.post(baseUrl + 'api/customer/reset?customerId=' + props.userId).then(response => {
+                        axios.post(baseUrl + 'api/customer/add', json).then(response => {
+                            swal("Added successfully", "All the answers were added successfully", "success");
+                            bootstrap();
+                        }, error => {
+                            swal("Error", "Error while adding answers: " + (error.response.data ? error.response.data : error) + " Please check logs", "error")
+                        });
                     }, error => {
-                        swal("Error", "Error while adding answers , " + error + " Please check logs", "error")
+                        swal("Error", "Error while adding answers, Please check logs", "error")
                     });
                 } else {
                     axios.post(baseUrl + 'api/customer/modify', json).then(response => {
                         swal("Modified successfully", "Modification Status:" + JSON.stringify(response.data), "success");
                         bootstrap();
                     }, error => {
-                        swal("Error", "Error while modifying answers, " + error + " Please check logs", "error")
+                        swal("Error", "Error while modifying answers: " + (error.response.data ? error.response.data : error) + " Please check logs", "error")
                     })
                 }
             }
@@ -132,11 +140,11 @@ const CustomerView = (props) => {
 
     useEffect(() => {
         bootstrap();
-    }, [props.userId]);
+    }, [props.userId, props.viewChanged]);
 
     return (
         <div>
-            <p>Welcome <span className="user-name"> {props.userId}</span>, Add security questions for the customer</p>
+            <p className="welcome-message">Welcome <span className="user-name"> {props.userId}</span>, Add security questions for the customer</p>
             <div className="CustomerQuestionView">
                 {noOfQuestionsPerCust !== 0 &&
                 <Form id="questionForm" onSubmit={handleFormSubmit}>
@@ -163,8 +171,8 @@ const CustomerView = (props) => {
                         </Form.Row>
                     )}
                     <div className="btn-div">
-                        {newUser && <button className="btn btn-primary btn-add" type="submit" onClick={handleAddSubmit}>Add Questions</button>}
-                        {!newUser && <button className="btn btn-primary btn-modify" type="submit" onClick={handleModifySubmit}>Modify Questions</button>}
+                        {newUser && <button className="btn btn-primary btn-add" type="submit" onClick={handleAddSubmit}>Save Answers</button>}
+                        {!newUser && <button className="btn btn-primary btn-modify" type="submit" onClick={handleModifySubmit}>Modify Answers</button>}
                         {!newUser && <button className="btn btn-primary btn-reset" type="submit" onClick={handleResetSubmit}>Reset</button>}
                     </div>
                 </Form>}

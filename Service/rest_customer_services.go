@@ -77,7 +77,8 @@ func RestListAnsweredQuestions(customerId string) (answers []Answer, err error) 
 
 func RestReset(custId string) {
 	_, err := startup.Db.Query("[SP_CUSTOMER_QUESTIONS_RESET]",
-		sql.Named("customerId", custId))
+		sql.Named("customerId", custId),
+		sql.Named("userId", custId))
 	if err != nil {
 		log.Fatal("Could not reset answers for customer [", custId, "] Error: ", err)
 		return

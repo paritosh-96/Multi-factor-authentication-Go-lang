@@ -39,9 +39,11 @@ func RestChallenge(customerId string) ([]Question, error) {
 			var question Question
 			err := rows.Scan(&question.QuestionId, &question.Question)
 			util.Check(err, "Error while loading the question from the resultSet")
-			questions = append(questions, question)
+			if err == nil {
+				questions = append(questions, question)
+				visitedQuestionIds = append(visitedQuestionIds, ind)
+			}
 		}
-		visitedQuestionIds = append(visitedQuestionIds, ind)
 	}
 	return questions, nil
 }

@@ -14,13 +14,15 @@ const ValidationView = (props) => {
         axios.get(baseUrl + 'api/event/challenge?customerId=' + props.userId).then(response => {
             setChallengeQuestions(response.data);
             let _qA = [];
-            for(let i =0; i< response.data.length; i++) {
+            for (let i = 0; i < response.data.length; i++) {
                 _qA.push({...response.data[i], CustomerId: props.userId});
             }
             setQuestionAnswer(_qA);
-            console.log(" Q A:" , _qA);
+            console.log(" Q A:", _qA);
         }, error => {
-            console.log("Error while fetching questions for customer" + props.userId + ": " + error);
+            console.log("Error while fetching questions for customer" + props.userId + ": " + (error.response.data ? error.response.data : error));
+            setQuestionAnswer([]);
+            setChallengeQuestions([]);
         });
     };
 
@@ -32,8 +34,8 @@ const ValidationView = (props) => {
     };
 
     const isAnswerValid = () => {
-        for(let ques of questionAnswer) {
-            if(ques["Answer"].length < 3){
+        for (let ques of questionAnswer) {
+            if (ques["Answer"].length < 3) {
                 swal("Oops", "Answers should be minimum 3 characters", "error");
                 return false;
             }
@@ -43,43 +45,41 @@ const ValidationView = (props) => {
 
     const ValidateAnswers = (event) => {
         event.preventDefault();
-        if(isAnswerValid()) {
+        if (isAnswerValid()) {
             let json = JSON.stringify(questionAnswer);
             axios.post(baseUrl + 'api/event/validate', json).then(response => {
                 swal("Success", "Validated successfully", "success");
                 bootstrap();
             }, error => {
-                swal("Error", "Invalid answers, Try again: " + error, "error");
+                swal("Error", "Invalid answers, Try again: " + (error.response.data ? error.response.data : error), "error");
             })
         }
     };
 
     useEffect(() => {
         bootstrap();
-    }, [props.userId]);
+    }, [props.userId, props.viewChanged]);
 
     return (
         <div>
-            <p>Welcome {props.userId}, Validate the customer answers</p>
+            <p className="welcome-message"> Welcome <span className="user-name"> {props.userId} </span>, Validate the customer answers </p>
             {challengeQuestions.length > 0 &&
             <Form onSubmit={ValidateAnswers}>
                 {challengeQuestions.map((ques, i) =>
                     <Form.Row>
-                        <Form.Label column sm="5">{ques.Question}</Form.Label>
+                        <Form.Label column sm="5"> {ques.Question} </Form.Label>
                         <Col sm="5">
-                            <Form.Control id={'ans' + i} onChange={(e) =>handleAnswerChange(ques.QuestionId, i, e)} placeholder="Answer..."/>
-                        </Col>
-                    </Form.Row>
-                )}
+                            <Form.Control id={'ans' + i} onChange={(e) => handleAnswerChange(ques.QuestionId, i, e)}
+                                          placeholder="Answer..."/>
+                        </Col> </Form.Row>)}
                 <Form.Row>
                     <Col sm={{span: 10, offset: 1}}>
-                        <Button type="submit">Validate</Button>
+                        <Button type="submit" className="validate-button"> Validate </Button>
                     </Col>
                 </Form.Row>
-            </Form>
-            }
+            </Form>}
         </div>
     );
 };
 
-export default ValidationView
+export default ValidationView;
