@@ -1,4 +1,4 @@
-# go-rest
+# Multi Factor Authentication
 Basic Rest apis in GO LANG
 
 The server holds a list of questions in it. The rest services allow a user to :
